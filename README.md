@@ -20,7 +20,7 @@ This repo includes setup of Ollama for use with AnythingLLM.
 
 Verified with DeepSeek-R1 1.5B LLM on an
 [OrangePi 5 single board computer with 8GB RAM](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html)
-runing Ubuntu 22.04.
+runing Ubuntu 22.04 Desktop.
 
 > Note I am a beginner user of docker so this may be verbose.
 
@@ -218,7 +218,7 @@ Save these changes.
 You can now chat with DeepSeek-R1 in the AnythingLLM workspace!
 
 In my testing of AnythingLLM docker I found the DeepSeek-R1 1.5B model rate to
-be slow at ~3 tokens/second compared with Ollama command line or Python API of
+be slow at <3 tokens/second compared with Ollama command line or Python API of
 ~7 tokens/second.  I found the model reasoning text as expected.
 
 ## Example chat
@@ -227,7 +227,8 @@ be slow at ~3 tokens/second compared with Ollama command line or Python API of
 
 ## Next Steps
 
-* [ ] Debug slow model speed: AnythingLLM with Ollama/DeepSeek-R1 1.5B runs at <3 tokens/second on OrangePi 5 (RK3588S SoC).  This is slower than using Ollama on the command line (~7 tokens/second) on the same hardware.
+* [ ] Debug slow model speed: AnythingLLM with Ollama/DeepSeek-R1 1.5B runs at <3 tokens/second on OrangePi 5 (RK3588S SoC, 8GB RAM).  This is slower than using Ollama on the command line (~7 tokens/second) on the same hardware.
 * [ ] Add bash script to run AnythingLLM docker.
 * [ ] Add instructions for starting the AnythingLLM docker on boot.
 * [ ] Add instruction for updating AnythingLLM docker version.
+* [ ] Simplify steps.
