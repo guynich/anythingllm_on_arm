@@ -62,7 +62,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-Verify the docker install.  Expect `github.com/docker/buildx v0.21.1 7c2359c`.
+Verify the docker install.  Expect `github.com/docker/buildx v0.21.1 7c2359c` or newer.
 ```console
 docker buildx version
 ```
@@ -116,7 +116,7 @@ docker run -d -p 3001:3001 \
 mintplexlabs/anythingllm
 ```
 Using a web browser you can now use AnythingLLM at `http://localhost:3001`.
-I use Chromium.
+I tested with Chromium.
 
 ### 3. Setup Ollama for network access
 
