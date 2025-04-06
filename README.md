@@ -1,15 +1,15 @@
 Installation of AnythingLLM for Ubuntu on ARM.
 
 - [Introduction](#introduction)
+  - [Example chat](#example-chat)
 - [Installation](#installation)
   - [1. Install Docker on Ubuntu](#1-install-docker-on-ubuntu)
   - [2. Install AnythingLLM docker](#2-install-anythingllm-docker)
   - [3. Setup Ollama for network access](#3-setup-ollama-for-network-access)
   - [4. Setup AnythingLLM for Ollama](#4-setup-anythingllm-for-ollama)
   - [5. Add AnythingLLM workspace settings for DeepSeek-R1](#5-add-anythingllm-workspace-settings-for-deepseek-r1)
-- [Work around slow LLM operation](#work-around-slow-llm-operation)
+  - [Work around slow LLM operation](#work-around-slow-llm-operation)
 - [Launcher script](#launcher-script)
-- [Example chat](#example-chat)
 - [Next Steps](#next-steps)
 
 ## Introduction
@@ -24,7 +24,12 @@ Verified with DeepSeek-R1 1.5B LLM on an
 [OrangePi 5 single board computer with 8GB RAM](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html)
 runing Ubuntu 22.04 Desktop.
 
-> Note I am a beginner user of docker so this may be verbose.
+### Example chat
+
+After installation this is an example of a browser chat session in AnythingLLM.
+
+<img src="./images/anythingllm_chat.png" alt="Chat example"/>
+
 
 ## Installation
 
@@ -220,7 +225,7 @@ Save these changes.
 
 You can now chat with DeepSeek-R1 in the AnythingLLM workspace!
 
-## Work around slow LLM operation
+### Work around slow LLM operation
 
 In testing of AnythingLLM docker I found DeepSeek-R1 1.5B model rate is
 slow at <3 tokens/second (expected ~7 tokens/second from running
@@ -244,17 +249,14 @@ interface not to load the workspace.  Refresh the page to continue.
 ## Launcher script
 
 This script has the workaround described above to mitigate slow LLM operation
-due to CPU contention.  Give permissions then run.
+due to CPU contention.  As already noted you may need to reload the browser
+web page on the first run.  Give permissions then run.
 ```console
 cd
 chmod +x ./anythingllm_on_arm/launcher.sh
 
 ./anythingllm_on_arm/launcher.sh
 ```
-
-## Example chat
-
-<img src="./images/anythingllm_chat.png" alt="Chat example"/>
 
 ## Next Steps
 
