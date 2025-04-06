@@ -7,7 +7,7 @@ Installation of AnythingLLM for Ubuntu on ARM.
   - [3. Setup Ollama for network access](#3-setup-ollama-for-network-access)
   - [4. Setup AnythingLLM for Ollama](#4-setup-anythingllm-for-ollama)
   - [5. Add AnythingLLM workspace settings for DeepSeek-R1](#5-add-anythingllm-workspace-settings-for-deepseek-r1)
-- [Slow operation due to CPU contention](#slow-operation-due-to-cpu-contention)
+- [Work around slow LLM operation](#work-around-slow-llm-operation)
 - [Example chat](#example-chat)
 - [Next Steps](#next-steps)
 
@@ -116,7 +116,8 @@ docker run -d -p 3001:3001 \
 mintplexlabs/anythingllm
 ```
 Using a web browser you can now use AnythingLLM at `http://localhost:3001`.
-I tested with Chromium.
+I tested with Chromium but later saw
+[CPU contention](#work-around-slow-llm-operation).
 
 ### 3. Setup Ollama for network access
 
@@ -218,28 +219,23 @@ Save these changes.
 
 You can now chat with DeepSeek-R1 in the AnythingLLM workspace!
 
-## Slow operation due to CPU contention
+## Work around slow LLM operation
 
-In my testing of AnythingLLM docker and Ollama on the same instance I found the
-DeepSeek-R1 1.5B model rate to be slow at <3 tokens/second.
+In testing of AnythingLLM docker I found DeepSeek-R1 1.5B model rate is
+slow at <3 tokens/second (expected ~7 tokens/second from running
+`ollama run deepseek-r1:1.5b --verbose` on command line).
 
-This is more than 2x slower than running DeepSeek-R1 1.5B on Ollama using
-command line or
-[Python API](https://github.com/guynich/deepseek_opi5plus/tree/main/browser)
-speeds of ~7 tokens/second.
+Root cause is CPU contention running the LLM and AnythingLLM docker and browser
+on the single board computer SoC.  I tried setting CPU affinities for Ollama on
+fast cores and AnythingLLM on slow cores but didn't find a speed improvement.
 
-I tried setting CPU affinities for Ollama to use the 4 fast cores of this
-single board computer RK3588S SoC and AnythingLLM docker uses the 4 slow cores.
-I found Ollama runs significantly slower without access to all 8 cores.
-
-I tried setting CPU affinities for Ollama to use all 8 cores and AnythingLLM
-docker to only use the 4 slow cores.  This did not mitigate slow operation.
-
-I found running AnthingLLM Desktop on a MacBook and setting the Base URL to the
-single board computer IP the LLM runs at the expected speed of ~7 tokens/second.
-
-Root cause is CPU contention running both the LLM and AnythingLLM docker on the
-single board computer (OrangePi 5 with 8GB RAM).  No known workaround.
+A workaround is to reduce the priority of the Chromium browser from the command
+line using `nice` and the initial query then runs at ~5 tokens/second.
+```console
+nice -n 10 chromium-browser
+```
+This reduction in priority causes the first view of the AnythingLLM user
+interface not to load the workspace.  Refresh the page to continue.
 
 ## Example chat
 
