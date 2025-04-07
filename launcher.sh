@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
-# Check if the container 'anythingllm_on_arm' is already running or already exists.
-if docker ps --filter "name=anythingllm_on_arm" --filter "status=running" | grep -q "anythingllm_on_arm"; then
-    echo "Container 'anythingllm_on_arm' is already running. Skipping Docker setup."
-elif docker ps -a --filter "name=anythingllm_on_arm" | grep -q "anythingllm_on_arm"; then
-    echo "Container 'anythingllm_on_arm' exists but is not running. Restarting the container."
-    docker start anythingllm_on_arm
+# Define the container name
+CONTAINER_NAME="anythingllm_on_arm"
+
+# Check if the container is already running or exists
+if docker ps --filter "name=$CONTAINER_NAME" --filter "status=running" | grep -q "$CONTAINER_NAME"; then
+    echo "Container '$CONTAINER_NAME' is already running. Skipping Docker setup."
+elif docker ps -a --filter "name=$CONTAINER_NAME" | grep -q "$CONTAINER_NAME"; then
+    echo "Container '$CONTAINER_NAME' exists but is not running. Restarting the container."
+    docker start "$CONTAINER_NAME"
 else
     # Launch AnythingLLM docker with name to avoid duplicate containers.
     export STORAGE_LOCATION=$HOME/anythingllm && \
@@ -14,7 +17,7 @@ else
     -v "${STORAGE_LOCATION}":/app/server/storage \
     -v "${STORAGE_LOCATION}"/.env:/app/server/.env \
     -e STORAGE_DIR="/app/server/storage" \
-    --name anythingllm_on_arm \
+    --name "$CONTAINER_NAME" \
     mintplexlabs/anythingllm
 fi
 

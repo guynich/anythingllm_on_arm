@@ -9,6 +9,7 @@ Installation of AnythingLLM for Ubuntu on ARM.
   - [4. Setup AnythingLLM for Ollama](#4-setup-anythingllm-for-ollama)
   - [5. Add AnythingLLM workspace settings for DeepSeek-R1](#5-add-anythingllm-workspace-settings-for-deepseek-r1)
   - [Work around slow LLM operation](#work-around-slow-llm-operation)
+  - [Updater script](#updater-script)
 - [Launcher script](#launcher-script)
 - [Next Steps](#next-steps)
 
@@ -235,9 +236,6 @@ Root cause is CPU contention running the LLM and AnythingLLM docker and browser
 on the single board computer SoC.  I tried setting CPU affinities for Ollama on
 fast cores and AnythingLLM on slow cores but didn't find a speed improvement.
 
-Avoid running other processes on the same SoC.  For example I see slower LLM
-rate if running VS Code.
-
 A workaround is to reduce the priority of the Chromium browser from the command
 line using `nice` and the initial query then runs at ~5 tokens/second.
 ```console
@@ -245,6 +243,21 @@ nice -n 10 chromium-browser
 ```
 This reduction in priority causes the first view of the AnythingLLM user
 interface not to load the workspace.  Refresh the page to continue.
+
+Avoid running other processes on the same SoC.  For example I see slower LLM
+rate if running VS Code.
+
+### Updater script
+
+This script pulls the latest version of AnthingLLM
+docker then stops and removes an existing container.
+```console
+cd
+chmod +x ./anythingllm_on_arm/updater.sh
+
+./anythingllm_on_arm/updater.sh
+```
+Run the launcher script to use the latest version.
 
 ## Launcher script
 
@@ -263,5 +276,5 @@ chmod +x ./anythingllm_on_arm/launcher.sh
 * [x] Debug slow model speed: AnythingLLM with Ollama/DeepSeek-R1 1.5B runs at <3 tokens/second on OrangePi 5 (RK3588S SoC).  This is slower than using Ollama on the command line (~7 tokens/second) on the same hardware.
 * [x] Add bash script to run AnythingLLM docker.
 * [ ] Add instructions for starting the AnythingLLM docker on boot.
-* [ ] Add instruction for updating AnythingLLM docker version.
+* [x] Add bash script to update AnythingLLM docker version.
 * [ ] Simplify steps.
