@@ -22,6 +22,7 @@ else
 fi
 
 # Launch Chromium browser with lower priority to mitigate slow LLM rate.
+# Uncomment the following line to run headless.
 nice -n 10 chromium-browser http://localhost:3001
 
 exit 0

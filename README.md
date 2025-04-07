@@ -9,6 +9,8 @@ Installation of AnythingLLM for Ubuntu on ARM.
   - [4. Setup AnythingLLM for Ollama](#4-setup-anythingllm-for-ollama)
   - [5. Add AnythingLLM workspace settings for DeepSeek-R1](#5-add-anythingllm-workspace-settings-for-deepseek-r1)
   - [Work around slow LLM operation](#work-around-slow-llm-operation)
+    - [Reduce SoC load](#reduce-soc-load)
+    - [Run headless](#run-headless)
   - [Updater script](#updater-script)
 - [Launcher script](#launcher-script)
 - [Next Steps](#next-steps)
@@ -19,7 +21,9 @@ Installation of AnythingLLM for Ubuntu on ARM.
 Instead we must install AnythingLLM docker to run on ARM.  This docker
 creates a web server for the AnythingLLM user interface.
 
-This repo includes setup of Ollama for use with AnythingLLM.
+This repo includes setup of Ollama for use with AnythingLLM.  My motivation to
+create this repo came from another [repo running DeepSeek-R1 on
+a single board computer](https://github.com/guynich/deepseek_opi5plus.git).
 
 Verified with DeepSeek-R1 1.5B LLM on an
 [OrangePi 5 single board computer with 8GB RAM](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html)
@@ -228,29 +232,40 @@ You can now chat with DeepSeek-R1 in the AnythingLLM workspace!
 
 ### Work around slow LLM operation
 
-In testing of AnythingLLM docker I found DeepSeek-R1 1.5B model rate is
-slow at <3 tokens/second (expected ~7 tokens/second from running
-`ollama run deepseek-r1:1.5b --verbose` on command line).
+In initial testing of AnythingLLM docker I ran the LLM, AnythingLLM and browser
+on the same single board computer.  Under this load the DeepSeek-R1 1.5B model
+rate is slow at <3 tokens/second.  I had expected ~7 tokens/second from running
+`ollama run deepseek-r1:1.5b --verbose` on command line.
 
-Root cause is CPU contention running the LLM and AnythingLLM docker and browser
-on the single board computer SoC.  I tried setting CPU affinities for Ollama on
-fast cores and AnythingLLM on slow cores but didn't find a speed improvement.
-
-A workaround is to reduce the priority of the Chromium browser from the command
-line using `nice` and the initial query then runs at ~5 tokens/second.
+#### Reduce SoC load
+A workaround to migitate slow LLM operation is to reduce the priority of the
+Chromium browser from the command line using `nice` and the initial query then
+runs at ~5 tokens/second.
 ```console
 nice -n 10 chromium-browser
 ```
-This reduction in priority causes the first view of the AnythingLLM user
+This reduction in priority may cause the first view of the AnythingLLM user
 interface not to load the workspace.  Refresh the page to continue.
 
 Avoid running other processes on the same SoC.  For example I see slower LLM
 rate if running VS Code.
 
+#### Run headless
+
+Later I ran the browser on a networked device with URL `<sbc_ip>:3001` and saw
+the expected model rate of ~7 tokens/second.  In this setup the single board
+computer is running Ollama with DeepSeek-R1 1.5B LLM model and the AnythingLLM
+docker web server.  We can call this configuration "headless" as no connected
+display is needed on the single board computer.
+
+Options to run on boot.
+* with Ubuntu Desktop add launcher script to the `Startup Applications` application.
+* create a systemd service calling the launcher script.
+
 ### Updater script
 
-This script pulls the latest version of AnthingLLM
-docker then stops and removes an existing container.
+This script pulls the latest version of AnythingLLM docker then stops and
+removes an existing container.
 ```console
 cd
 chmod +x ./anythingllm_on_arm/updater.sh
@@ -261,20 +276,23 @@ Run the launcher script to use the latest version.
 
 ## Launcher script
 
-This script has the workaround described above to mitigate slow LLM operation
-due to CPU contention.  As already noted you may need to reload the browser
-web page on the first run.  Give permissions then run.
+This script has the browser priority workaround described above to mitigate
+slow LLM operation due to CPU contention.  As already noted you may need to
+reload the browser web page on the first run.  Give permissions then run.
 ```console
 cd
 chmod +x ./anythingllm_on_arm/launcher.sh
 
 ./anythingllm_on_arm/launcher.sh
 ```
+For single board computer headless operation: uncomment the browser command
+and use another networked device to browse the AnythingLLM web server on port
+3001.
 
 ## Next Steps
 
 * [x] Debug slow model speed: AnythingLLM with Ollama/DeepSeek-R1 1.5B runs at <3 tokens/second on OrangePi 5 (RK3588S SoC).  This is slower than using Ollama on the command line (~7 tokens/second) on the same hardware.
 * [x] Add bash script to run AnythingLLM docker.
-* [ ] Add instructions for starting the AnythingLLM docker on boot.
+* [x] Add instructions for starting the AnythingLLM docker on boot.
 * [x] Add bash script to update AnythingLLM docker version.
 * [ ] Simplify steps.
