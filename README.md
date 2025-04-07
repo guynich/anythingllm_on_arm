@@ -295,4 +295,5 @@ and use another networked device to browse the AnythingLLM web server on port
 * [x] Add bash script to run AnythingLLM docker.
 * [x] Add instructions for starting the AnythingLLM docker on boot.
 * [x] Add bash script to update AnythingLLM docker version.
+* [ ] Add a retrieval augmented generation (RAG) example.
 * [ ] Simplify steps.
