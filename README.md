@@ -38,9 +38,12 @@ After installation this is an example of a browser chat session in AnythingLLM.
 
 ## Installation
 
+This repo focuses on ARM architecture. However these instructions are also 
+suitable for x86.
+
 ### 1. Install Docker on Ubuntu
 
-I read these links for this section.
+I read these links for this section.  
 * https://docs.docker.com/engine/install/ubuntu/
 * https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 * https://docs.docker.com/engine/install/linux-postinstall/
@@ -78,7 +81,8 @@ Verify the docker install.  Expect `github.com/docker/buildx v0.21.1 7c2359c` or
 docker buildx version
 ```
 
-Fix permissions.
+Fix permissions.  This mitigates a permission denied error connecting to docker 
+daemon on Ubuntu.
 ```console
 sudo usermod -aG docker $USER
 sudo systemctl restart docker
